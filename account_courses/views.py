@@ -91,7 +91,7 @@ def oauth_complete(request):
         post_params = {
             'client_id': settings.REPORT_TOOLS.get('canvas_client_id'),
             'redirect_uri': reverse('ac:oauth_complete'),
-            'client_secret': settings.REPORT_TOOLS.get('canvas_client_secret'),
+            'client_secret': settings.REPORT_TOOLS.get('canvas_client_key'),
             'code': oauth_code,
         }
         r = requests.post(oauth_token_url, post_params)
