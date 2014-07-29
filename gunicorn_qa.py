@@ -9,3 +9,5 @@ pidfile = 'gunicorn.pid'
 accesslog = 'access.log'
 
 errorlog = 'error.log'
+
+daemon = True
