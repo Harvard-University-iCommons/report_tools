@@ -55,7 +55,7 @@ path.append(SITE_ROOT)
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY')
+SECRET_KEY = SECURE_SETTINGS.get('django_secret_key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,5 +139,8 @@ STATICFILES_DIRS = (
     normpath(join(SITE_ROOT, 'static')),
 )
 
-
+REPORT_TOOLS = {
+    'canvas_client_id': SECURE_SETTINGS['canvas_client_id'],
+    'canvas_client_key': SECURE_SETTINGS['canvas_client_key'],
+}
 
