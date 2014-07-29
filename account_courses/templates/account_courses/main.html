@@ -1,0 +1,95 @@
+{% extends "icommons_ui/base_lti.html" %}
+{% load report_tags %}
+
+{% block content %}
+
+<div class="container" >
+
+<table class="table table-condensed">
+<thead>
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Published</th>
+        <th>Default View</th>
+    </tr>
+</thead>
+<tbody>
+{% for course in account_courses %}
+    {% if course.workflow_state == 'unpublished' %}
+    <tr class="warning text-muted">
+    {% else %}
+    <tr>
+    {% endif %}
+        <td>
+
+            <a href="https://canvas.icommons.harvard.edu/courses/{{ course.id }}" target="_parent"><i class="fa fa-home"></i><span class="sr-only">homepage</span></a>
+
+            {% if course.calendar.ics %}
+                <a href="{{ course.calendar.ics }}"><i class="fa fa-calendar"></i><span class="sr-only">calendar</span></a>
+            {% endif %}
+        </td>
+        <td>
+            <code alt="{{course.sis_course_id }}" class="hu-tooltip" data-toggle="tooltip" data-html="true" title="Canvas Course ID: {{ course.id }}<br/>Course Instance ID: {{ course.sis_course_id }}">{{ course.course_code }}</code>
+
+            {% if course.name|length > 80 %}
+                <span class="hu-tooltip" data-toggle="tooltip" title="{{ course.name }}">{{ course.name|truncatechars:80 }}</span>
+            {% else %}
+                {{ course.name|truncatechars:80 }}
+            {% endif%}
+
+            {% if course.public_syllabus %}
+            <a href="https://canvas.icommons.harvard.edu/courses/{{ course.id }}/assignments/syllabus" class="label label-success">public syllabus</a>
+            {% endif %}
+
+        </td>
+
+
+
+        {% if course.workflow_state == 'available' %}
+        <td class="text-success"><i class="fa fa-check text-success"></i><span class="sr-only">available</span></td>
+        {% elif course_workflow_state == 'deleted' %}
+        <td class="text-danger">{{ course.workflow_state }}</td>
+        {% else %}
+        <td>{{ course.workflow_state }}</td>
+        {% endif %}
+        <td>
+            {{ course.default_view|get_view_name }}
+            
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if page_links %}
+    <ul class="pager">
+    {% if page_links.prev %}
+        <li><a href="{% url 'ac:main' %}?page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
+    {% else %}
+        <li class="disabled"><a href="{% url 'ac:main' %}?page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
+    {% endif %}
+    {% if page_links.next %}
+        <li><a href="{% url 'ac:main' %}?page_link={{ page_links.next.url|urlencode }}">Next</a></li>
+    {% else %}
+        <li class="disabled"><a href="{% url 'ac:main' %}?page_link={{ page_links.next.url|urlencode }}">Next</a></li>
+    {% endif %}
+    </ul>
+{% endif %}
+
+</div>
+
+
+
+
+
+{% endblock content %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $('.hu-tooltip').tooltip();
+    </script>
+
+{% endblock javascript %}

@@ -10,6 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
+from .secure import SECURE_SETTINGS
+from django.core.urlresolvers import reverse_lazy
 
 # Normally you should not import ANYTHING from Django directly
 # into your settings, but ImproperlyConfigured is an exception.
@@ -72,6 +74,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'icommons_ui',
+    'account_courses',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,12 +84,22 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_auth_lti.middleware.LTIAuthMiddleware',
+
 )
 
 ROOT_URLCONF = 'report_tools.urls'
 
 WSGI_APPLICATION = 'report_tools.wsgi.application'
+
+AUTHENTICATION_BACKENDS = (
+    'django_auth_lti.backends.LTIAuthBackend',
+)
+
+LOGIN_URL = reverse_lazy('lti_auth_error')
+
+LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials', None)
 
 
 # Database
@@ -124,3 +138,6 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     normpath(join(SITE_ROOT, 'static')),
 )
+
+
+

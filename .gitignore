@@ -8,3 +8,5 @@ sqlnet.log
 local_settings.py
 .vagrant
 *.sqlite3
+secure*.py*
+!secure.py.example
