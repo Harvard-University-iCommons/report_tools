@@ -58,6 +58,8 @@ def lti_launch(request):
             oauth_redir_url = 'https://%s/login/oauth2/auth?client_id=%s&response_type=code&redirect_uri=%s&state=%s' % \
                 (request.session['LTI_LAUNCH'].get('custom_canvas_api_domain'), oauth_client_id, redirect_uri, oauth_initial_state)
 
+            logger.debug('No oauth2 token - redirect the user to Canvas to get one: %s' % oauth_redir_url)
+
             return redirect(oauth_redir_url)
 
     else:

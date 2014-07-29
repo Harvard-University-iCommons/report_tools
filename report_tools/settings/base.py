@@ -144,3 +144,5 @@ REPORT_TOOLS = {
     'canvas_client_key': SECURE_SETTINGS['canvas_client_key'],
 }
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
