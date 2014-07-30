@@ -139,13 +139,18 @@ def main(request):
             if request.GET.get('term_id') != '' and request.GET.get('term_id') != 'all':
                 term_id = 'sis_term_id:%s' % request.GET.get('term_id')
 
+        published = None
+        if request.GET.get('published'):
+            if request.GET.get('published') == 'true' or request.GET.get('published') == 'false':
+                published = request.GET.get('published')
+
         logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
-        api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id)
+        api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published)
     
     account_courses = api_response.json()
     page_links = api_response.links
     logger.debug(page_links)
-    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links, 'search_term': request.GET.get('search_term',''), 'terms': TERMS})
+    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links, 'search_term': request.GET.get('search_term',''), 'terms': TERMS, 'term_id': term_id, 'published': published})
 
 
 
