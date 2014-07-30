@@ -123,23 +123,24 @@ def main(request):
     canvas_api_url = 'https://%s/api' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
     rc = RequestContext(canvas_api_token, canvas_api_url, per_page=20)
 
+    search_term = None
+    term_id = None
+    published = None
+
     if request.GET.get('page_link'):
         api_response = client.get(rc, request.GET.get('page_link'))
     else:
         params = {}
-        search_term = None
         if request.GET.get('search_term'):
             if request.GET.get('search_term') == '':
                 search_term = None
             else:
                 search_term = request.GET.get('search_term')
 
-        term_id = None
         if request.GET.get('term_id'):
             if request.GET.get('term_id') != '' and request.GET.get('term_id') != 'all':
                 term_id = 'sis_term_id:%s' % request.GET.get('term_id')
 
-        published = None
         if request.GET.get('published'):
             if request.GET.get('published') == 'true' or request.GET.get('published') == 'false':
                 published = request.GET.get('published')
