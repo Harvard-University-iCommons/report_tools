@@ -21,6 +21,13 @@ import urllib
 
 logger = logging.getLogger(__name__)
 
+TERMS = {
+    '2014-1': 'Fall 2014-2015',
+    '2014-2': 'Spring 2014-2015',
+    '2014-5': 'Winter 2014-2015',
+    '2014-4': 'Full Year 2014-2015',
+}
+
 # Create your views here.
 
 @require_http_methods(['GET'])
@@ -59,7 +66,6 @@ def lti_launch(request):
                 (request.session['LTI_LAUNCH'].get('custom_canvas_api_domain'), oauth_client_id, redirect_uri, oauth_initial_state)
 
             logger.debug('No oauth2 token - redirect the user to Canvas to get one: %s' % oauth_redir_url)
-
             return redirect(oauth_redir_url)
 
     else:
@@ -120,12 +126,26 @@ def main(request):
     if request.GET.get('page_link'):
         api_response = client.get(rc, request.GET.get('page_link'))
     else:
-        api_response = accounts.list_active_courses_in_account(rc, account_id)
+        params = {}
+        search_term = None
+        if request.GET.get('search_term'):
+            if request.GET.get('search_term') == '':
+                search_term = None
+            else:
+                search_term = request.GET.get('search_term')
+
+        term_id = None
+        if request.GET.get('term_id'):
+            if request.GET.get('term_id') != '' and request.GET.get('term_id') != 'all':
+                term_id = 'sis_term_id:%s' % request.GET.get('term_id')
+
+        logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
+        api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id)
     
     account_courses = api_response.json()
     page_links = api_response.links
     logger.debug(page_links)
-    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links})
+    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links, 'search_term': request.GET.get('search_term',''), 'terms': TERMS})
 
 
 
