@@ -121,14 +121,14 @@ def main(request):
 
     canvas_api_token = request.session.get('canvas_api_token')
     canvas_api_url = 'https://%s/api' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
-    rc = RequestContext(canvas_api_token, canvas_api_url, per_page=20)
+    rc = RequestContext(canvas_api_token, canvas_api_url, per_page=15)
 
     search_term = None
     term_id = None
     published = None
     if request.GET.get('search_term'):
         if request.GET.get('search_term') == '':
-            search_term = None
+            search_term = ''
         else:
             search_term = request.GET.get('search_term')
 
@@ -150,7 +150,15 @@ def main(request):
     account_courses = api_response.json()
     page_links = api_response.links
     logger.debug(page_links)
-    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links, 'search_term': request.GET.get('search_term',''), 'terms': TERMS, 'term_id': term_id, 'published': published})
+
+    query_params = request.GET.copy()
+
+    query_params.pop('page_link', None)
+    query_string = urllib.urlencode(query_params)
+
+    self_link = reverse('ac:main') + '?' + query_string
+
+    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links, 'search_term': request.GET.get('search_term',''), 'terms': TERMS, 'term_id': term_id, 'published': published, 'self_link': self_link })
 
 
 

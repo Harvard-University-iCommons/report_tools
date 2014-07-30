@@ -93,14 +93,14 @@
 {% if page_links %}
     <ul class="pager">
     {% if page_links.prev %}
-        <li><a href="{% url 'ac:main' %}?page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
+        <li><a href="{{ self_link }}&page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
     {% else %}
-        <li class="disabled"><a href="{% url 'ac:main' %}?page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
+        <li class="disabled"><a href="{{ self_link }}&page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
     {% endif %}
     {% if page_links.next %}
-        <li><a href="{% url 'ac:main' %}?page_link={{ page_links.next.url|urlencode }}">Next</a></li>
+        <li><a href="{{ self_link }}&page_link={{ page_links.next.url|urlencode }}">Next</a></li>
     {% else %}
-        <li class="disabled"><a href="{% url 'ac:main' %}?page_link={{ page_links.next.url|urlencode }}">Next</a></li>
+        <li class="disabled"><a href="{{ self_link }}&page_link={{ page_links.next.url|urlencode }}">Next</a></li>
     {% endif %}
     </ul>
 {% endif %}
