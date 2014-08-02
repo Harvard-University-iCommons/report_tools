@@ -58,7 +58,7 @@ def lti_launch(request):
             else:
                 host = 'http://' + request.get_host()
 
-            url = host + reverse('ac:oauth_complete')
+            url = host + reverse('oauth_complete')
 
             redirect_uri = urllib.quote_plus(url)
 
@@ -147,6 +147,7 @@ def main(request):
         logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
         api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published)
     
+    logger.debug(api_response.text  )
     account_courses = api_response.json()
     page_links = api_response.links
     logger.debug(page_links)

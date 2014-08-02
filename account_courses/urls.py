@@ -11,7 +11,6 @@ urlpatterns = patterns('',
 
     url(r'^tool_config$', 'account_courses.views.tool_config', name='tool_config'),
 
-    url(r'^oauth_complete$', 'account_courses.views.oauth_complete', name='oauth_complete'),
 
 )
 

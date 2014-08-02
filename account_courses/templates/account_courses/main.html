@@ -8,7 +8,7 @@
 <form role="form" class="form-inline">
     <div class="form-group">
         <label for="enrollment_term" class="sr-only">Enrollment term</label>
-        <select id="term_id" name="term_id" class="form-control" onchange="this.form.submit()">
+        <select id="term_id" name="term_id" class="form-control input-sm" onchange="this.form.submit()">
         <option value="all">All terms</option>
         {% for t_id, t_name in terms.items %}
             <option value="{{ t_id }}" {% if request.GET.term_id == t_id %}selected="yes"{% endif %}>{{ t_name }}</option>
@@ -18,19 +18,20 @@
 
     <div class="form-group">
         <label for="published" class="sr-only">Published status</label>
-        <select id="published" name="published" class="form-control" onchange="this.form.submit()">
+        <select id="published" name="published" class="form-control input-sm" onchange="this.form.submit()">
             <option value="all">Both published and unpublished</option>
             <option value="true" {% if request.GET.published == 'true' %}selected="yes"{% endif %}>Only published courses</option>
             <option value="false" {% if request.GET.published == 'false' %}selected="yes"{% endif %}>Only unpublished courses</option>
         </select>
     </div>
-
     <div class="form-group">
         <label for="search_term" class="sr-only">Search term</label>
-        <input id="search_term" name="search_term" placeholder="Search" class="form-control" value="{{ search_term }}"/>
+        <input id="search_term" name="search_term" placeholder="Search" class="form-control input-sm" value="{{ search_term }}"/>
     </div>
 
-    <button type="submit" class="btn btn-default"><i class="fa fa-search"></i><span class="sr-only">Search</span></button>
+    <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i><span class="sr-only">Search</span></button>
+
+    
 </form>
 
 <table class="table table-condensed">
