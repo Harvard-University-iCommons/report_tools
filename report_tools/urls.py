@@ -14,6 +14,6 @@ urlpatterns = patterns('',
     url(r'^reports/auth_error/', 'icommons_ui.views.not_authorized', name='lti_auth_error'),
     url(r'^reports/not_authorized/', 'icommons_ui.views.not_authorized', name='not_authorized'),
 
-    url(r'^oauth/complete', 'account_courses.views.oauth_complete', name='oauth_complete'),
+    url(r'^reports/oauth/complete', 'account_courses.views.oauth_complete', name='oauth_complete'),
 
 )
