@@ -90,10 +90,13 @@ def oauth_complete(request):
 
         if oauth_state != request.session.get('oauth_initial_state'):
             return render(request, 'account_courses/error.html', {'message': 'OAuth state mismatch.'})
+        else:
+            logger.debug('User granted the tool access to the API key; now fetch the key from Canvas')
 
         # use the code to fetch the actual token
         # generate a post request to /login/oauth2/token
         oauth_token_url = 'https://%s/login/oauth2/token' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
+        logger.debug('Fetch key using this URL: %s' % oauth_token_url)
         post_params = {
             'client_id': settings.REPORT_TOOLS.get('canvas_client_id'),
             'redirect_uri': reverse('oauth_complete'),
@@ -159,7 +162,17 @@ def main(request):
 
     self_link = reverse('ac:main') + '?' + query_string
 
-    return render(request, 'account_courses/main.html', {'request': request, 'account_courses': account_courses, 'page_links': page_links, 'search_term': request.GET.get('search_term',''), 'terms': TERMS, 'term_id': term_id, 'published': published, 'self_link': self_link })
+    canvas_hostname = request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
+
+    return render(request, 'account_courses/main.html', {'request': request, 
+        'account_courses': account_courses, 
+        'page_links': page_links, 
+        'search_term': request.GET.get('search_term',''), 
+        'terms': TERMS, 
+        'term_id': term_id, 
+        'published': published, 
+        'self_link': self_link,
+        'canvas_hostname': canvas_hostname, })
 
 
 

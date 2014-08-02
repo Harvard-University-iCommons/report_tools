@@ -52,7 +52,7 @@
     {% endif %}
         <td>
 
-            <a href="https://canvas.icommons.harvard.edu/courses/{{ course.id }}" target="_parent"><i class="fa fa-home"></i><span class="sr-only">homepage</span></a>
+            <a href="https://{{ canvas_hostname }}/courses/{{ course.id }}" target="_parent"><i class="fa fa-home"></i><span class="sr-only">homepage</span></a>
 
             {% if course.calendar.ics %}
                 <a href="{{ course.calendar.ics }}"><i class="fa fa-calendar"></i><span class="sr-only">calendar</span></a>
@@ -68,7 +68,7 @@
             {% endif%}
 
             {% if course.public_syllabus %}
-            <a href="https://canvas.icommons.harvard.edu/courses/{{ course.id }}/assignments/syllabus" class="label label-success" target="_parent">public syllabus</a>
+            <a href="https://{{ canvas_hostname }}/courses/{{ course.id }}/assignments/syllabus" class="label label-success" target="_parent">public syllabus</a>
             {% endif %}
 
         </td>
