@@ -96,7 +96,7 @@ def oauth_complete(request):
         oauth_token_url = 'https://%s/login/oauth2/token' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
         post_params = {
             'client_id': settings.REPORT_TOOLS.get('canvas_client_id'),
-            'redirect_uri': reverse('ac:oauth_complete'),
+            'redirect_uri': reverse('oauth_complete'),
             'client_secret': settings.REPORT_TOOLS.get('canvas_client_key'),
             'code': oauth_code,
         }
