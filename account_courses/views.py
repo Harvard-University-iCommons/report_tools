@@ -9,6 +9,7 @@ from ims_lti_py.tool_provider import DjangoToolProvider
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from icommons_common.models import CanvasOauthToken
 
 from canvas_sdk.methods import accounts
 from canvas_sdk import RequestContext
@@ -41,9 +42,19 @@ def index(request):
 def lti_launch(request):
     if request.user.is_authenticated():
 
+
+
         if request.session.get('canvas_api_token'):
             # we have a token, so redirect the user to the main view
             logger.debug("redirect user to the report page")
+            return redirect('ac:main')
+
+        user_tokens = CanvasOauthToken.objects.filter(user_id=request.user.username)
+        if user_tokens:
+            user_token = user_tokens[0]
+            request.session['canvas_api_token'] = user_token.token
+            # we have a token, so redirect the user to the main view
+            logger.debug("found token in database; redirect user to the report page")
             return redirect('ac:main')
 
         else:
@@ -108,6 +119,8 @@ def oauth_complete(request):
         if r.status_code == 200:
             response_data = r.json()
             canvas_api_token = response_data['access_token']
+            user_token = CanvasOauthToken(user_id=request.user.username, token=canvas_api_token)
+            user_token.save()
             request.session['canvas_api_token'] = canvas_api_token
             return redirect('ac:main')
 

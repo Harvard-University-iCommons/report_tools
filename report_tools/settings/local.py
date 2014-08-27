@@ -16,6 +16,20 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': 'isitedev',
+        'USER': SECURE_SETTINGS['DJANGO_DB_USER'],
+        'PASSWORD': SECURE_SETTINGS['DJANGO_DB_PASS'],
+        'HOST': 'icd3.isites.harvard.edu',
+        'PORT': '8103',
+        'OPTIONS': {
+            'threaded': True,
+        },
+        'CONN_MAX_AGE': 0,
+    }
+}
 
 LOGGING = {
     'version': 1,

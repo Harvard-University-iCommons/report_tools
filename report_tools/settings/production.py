@@ -9,6 +9,21 @@ ALLOWED_HOSTS = ['*']
 
 STATIC_ROOT = normpath(join(SITE_ROOT, 'http_static'))
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': 'isitedgd',
+        'USER': SECURE_SETTINGS['DJANGO_DB_USER'],
+        'PASSWORD': SECURE_SETTINGS['DJANGO_DB_PASS'],
+        'HOST': 'dbnode3.isites.harvard.edu',
+        'PORT': '8003',
+        'OPTIONS': {
+            'threaded': True,
+        },
+        'CONN_MAX_AGE': 600,
+    }
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
