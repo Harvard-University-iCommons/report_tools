@@ -163,7 +163,7 @@ def main(request):
         logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
         api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published)
     
-    logger.debug(api_response.text  )
+    logger.debug(api_response.text)
     account_courses = api_response.json()
     page_links = api_response.links
     logger.debug(page_links)

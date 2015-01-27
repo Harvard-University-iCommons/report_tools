@@ -5,8 +5,4 @@
  
 # below are requirements specific to the production environment
 
-git+ssh://git@github.com/Harvard-University-iCommons/django-icommons-common.git#egg=django-icommons-common
-git+ssh://git@github.com/Harvard-University-iCommons/django-icommons-ui.git#egg=django-icommons-ui
-git+ssh://git@github.com/Harvard-University-iCommons/django-auth-lti.git#egg=django-auth-lti
-
 gunicorn==19.1.0

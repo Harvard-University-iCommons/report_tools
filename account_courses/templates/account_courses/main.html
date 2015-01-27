@@ -40,6 +40,7 @@
         <th></th>
         <th>Name</th>
         <th>Published</th>
+        <th>Visibility</th>
         <th>Default View</th>
     </tr>
 </thead>
@@ -82,6 +83,18 @@
         {% else %}
         <td>{{ course.workflow_state }}</td>
         {% endif %}
+
+        <td>
+        {% if course.is_public %}
+        public
+        {% elif course.is_public_to_auth_users %}
+        all authenticated users
+        {% else %}
+        members only
+        {% endif %}
+        </td>
+
+
         <td>
             {{ course.default_view|get_view_name }}
             
