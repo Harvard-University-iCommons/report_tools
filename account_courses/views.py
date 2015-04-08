@@ -27,6 +27,7 @@ TERMS = {
     '2014-2': 'Spring 2014-2015',
     '2014-5': 'Winter 2014-2015',
     '2014-4': 'Full Year 2014-2015',
+    '2014-0': 'Summer 2014-2015',
 }
 
 # Create your views here.
