@@ -6,3 +6,5 @@
 # below are requirements specific to the production environment
 
 gunicorn==19.1.0
+
+lxml==3.3.5
