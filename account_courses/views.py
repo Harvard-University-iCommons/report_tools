@@ -1,11 +1,8 @@
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from ims_lti_py.tool_config import ToolConfig
 from django.http import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
-from django import template
-from ims_lti_py.tool_provider import DjangoToolProvider
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +12,6 @@ from canvas_sdk.methods import accounts
 from canvas_sdk import RequestContext
 from canvas_sdk import client
 
-from time import time
 import logging
 import requests
 import urllib
@@ -35,20 +31,18 @@ TERMS = {
     '2015-0': 'Summer 2015-2016',
 }
 
-# Create your views here.
 
 @require_http_methods(['GET'])
 def index(request):
     logger.info("request to index.")
     return render(request, 'account_courses/index.html')
 
+
 @login_required
 @require_http_methods(['POST'])
 @csrf_exempt
 def lti_launch(request):
     if request.user.is_authenticated():
-
-
 
         if request.session.get('canvas_api_token'):
             # we have a token, so redirect the user to the main view
@@ -133,13 +127,13 @@ def oauth_complete(request):
         else:
             return render(request, 'account_courses/error.html', {'message': 'failed to get the token: %s' % r.text})
 
+
 @login_required
 @require_http_methods(['GET'])
 def main(request):
 
     # the current account ID is in custom_canvas_account_id
     account_id = request.session['LTI_LAUNCH'].get('custom_canvas_account_id')
-    account_name = request.session['LTI_LAUNCH'].get('custom_canvas_account_id')
 
     canvas_api_token = request.session.get('canvas_api_token')
     canvas_api_url = 'https://%s/api' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
@@ -168,7 +162,7 @@ def main(request):
 
         logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
         api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published, per_page=12)
-    
+
     logger.debug(api_response.text)
     account_courses = api_response.json()
     page_links = api_response.links
@@ -183,17 +177,17 @@ def main(request):
 
     canvas_hostname = request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
 
-    return render(request, 'account_courses/main.html', {'request': request, 
+    return render(request, 'account_courses/main.html', {
+        'request': request, 
         'account_courses': account_courses, 
         'page_links': page_links, 
-        'search_term': request.GET.get('search_term',''), 
+        'search_term': request.GET.get('search_term', ''), 
         'terms': TERMS, 
         'term_id': term_id, 
         'published': published, 
         'self_link': self_link,
-        'canvas_hostname': canvas_hostname, })
-
-
+        'canvas_hostname': canvas_hostname, 
+    })
 
 
 @require_http_methods(['GET'])
@@ -217,8 +211,8 @@ def tool_config(request):
         # optionally, supply a different URL for the link:
         # 'url': 'http://library.harvard.edu',
         'text': 'Courses in this account',
-        #'default': 'disabled',
-        #'visibility': 'public',
+        # 'default': 'disabled',
+        # 'visibility': 'public',
     }
     lti_tool_config.set_ext_param('canvas.instructure.com', 'account_navigation', account_nav_params)
     lti_tool_config.set_ext_param('canvas.instructure.com', 'privacy_level', 'public')

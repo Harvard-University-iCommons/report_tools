@@ -12,6 +12,8 @@ from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 from .secure import SECURE_SETTINGS
 from django.core.urlresolvers import reverse_lazy
+import logging
+import time
 
 # Normally you should not import ANYTHING from Django directly
 # into your settings, but ImproperlyConfigured is an exception.
@@ -29,7 +31,7 @@ def get_env_variable(var_name):
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = dirname(dirname(__file__))
 
-### Path stuff as recommended by Two Scoops / with local mods
+# Path stuff as recommended by Two Scoops / with local mods
 
 # Absolute filesystem path to the Django project config directory:
 # (this is the parent of the directory where this file resides, 
@@ -47,22 +49,15 @@ SITE_NAME = basename(SITE_ROOT)
 # name in our dotted import paths:
 path.append(SITE_ROOT)
 
-### End path stuff
+# End path stuff
 
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECURE_SETTINGS.get('django_secret_key')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -103,12 +98,15 @@ LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials', None)
 
 
 # Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': SECURE_SETTINGS.get('db_default_name'),
+        'USER': SECURE_SETTINGS.get('db_default_user'),
+        'PASSWORD': SECURE_SETTINGS.get('db_default_password'),
+        'HOST': SECURE_SETTINGS.get('db_default_host'),
+        'PORT': SECURE_SETTINGS.get('db_default_port'),  # Default postgres port
     }
 }
 
@@ -139,10 +137,69 @@ STATICFILES_DIRS = (
     normpath(join(SITE_ROOT, 'static')),
 )
 
+STATIC_ROOT = normpath(join(SITE_ROOT, 'http_static'))
+
 REPORT_TOOLS = {
-    'canvas_client_id': SECURE_SETTINGS['canvas_client_id'],
-    'canvas_client_key': SECURE_SETTINGS['canvas_client_key'],
+    'canvas_client_id': SECURE_SETTINGS['reports_canvas_client_id'],
+    'canvas_client_key': SECURE_SETTINGS['reports_canvas_client_key'],
 }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Logging
+
+LOG_ROOT = SECURE_SETTINGS.get('log_root', '')  # Default to current directory
+
+# Make sure log timestamps are in GMT
+logging.Formatter.converter = time.gmtime
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(module)s %(message)s'
+        }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        # Log to a text file that can be rotated by logrotate
+        'logfile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'filename': join(LOG_ROOT, 'django-report_tools.log'),
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['logfile'],
+            'level': SECURE_SETTINGS.get('log_level', 'INFO'),        
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['logfile'],
+            'level': SECURE_SETTINGS.get('log_level', 'INFO'),        
+            'propagate': True,
+        },
+        'report_tools': {
+            'handlers': ['logfile'],
+            'level': SECURE_SETTINGS.get('log_level', 'INFO'),        
+            'propagate': True,
+        },
+        'account_courses': {
+            'handlers': ['logfile'],
+            'level': SECURE_SETTINGS.get('log_level', 'INFO'),        
+            'propagate': True,
+        },
+
+    }
+}
