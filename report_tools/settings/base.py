@@ -63,13 +63,14 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
-    #'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'icommons_ui',
+    'icommons_common',
     'account_courses',
 )
 
@@ -79,7 +80,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_auth_lti.middleware.LTIAuthMiddleware',
 
 )
@@ -140,8 +141,8 @@ STATICFILES_DIRS = (
 STATIC_ROOT = normpath(join(SITE_ROOT, 'http_static'))
 
 REPORT_TOOLS = {
-    'canvas_client_id': SECURE_SETTINGS['reports_canvas_client_id'],
-    'canvas_client_key': SECURE_SETTINGS['reports_canvas_client_key'],
+    'canvas_client_id': SECURE_SETTINGS['client_id'],
+    'canvas_client_key': SECURE_SETTINGS['client_secret'],
 }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -195,11 +196,5 @@ LOGGING = {
             'level': SECURE_SETTINGS.get('log_level', 'INFO'),        
             'propagate': True,
         },
-        'account_courses': {
-            'handlers': ['logfile'],
-            'level': SECURE_SETTINGS.get('log_level', 'INFO'),        
-            'propagate': True,
-        },
-
     }
 }
