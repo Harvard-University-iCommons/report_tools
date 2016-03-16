@@ -1,19 +1,9 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
+from icommons_ui import views as ui_views
 
-#from django.contrib import admin
-#admin.autodiscover()
-
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'project_name.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
-    # url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^reports/account_courses/', include('account_courses.urls', namespace='ac')),
-    url(r'^reports/auth_error/', 'icommons_ui.views.not_authorized', name='lti_auth_error'),
-    url(r'^reports/not_authorized/', 'icommons_ui.views.not_authorized', name='not_authorized'),
-
-    url(r'^reports/oauth/complete', 'account_courses.views.oauth_complete', name='oauth_complete'),
-
-)
+urlpatterns = [
+    url(r'^account_courses/', include('account_courses.urls', 'ac')),
+    url(r'^auth_error/', ui_views.not_authorized, name='lti_auth_error'),
+    url(r'^not_authorized/', ui_views.not_authorized, name='not_authorized'),
+    url(r'^oauth/', include('canvas_oauth.urls')),
+]
