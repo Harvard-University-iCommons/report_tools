@@ -1,0 +1,6 @@
+# deployment environment requirements
+
+#includes the base.txt requirements needed in all environments
+-r base.txt
+
+gunicorn==19.4.5

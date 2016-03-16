@@ -5,8 +5,10 @@ sqlnet.log
 *.pid
 *.pyc
 *.pot
-local_settings.py
 .vagrant
 *.sqlite3
-secure*.py*
-!secure.py.example
+# Generated files
+secure.py
+gunicorn.py
+# Where static files are collected
+http_static
