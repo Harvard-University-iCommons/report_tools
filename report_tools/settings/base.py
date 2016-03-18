@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_auth_lti',
     'icommons_ui',
-    'report_tools',
+    'icommons_common',
     'account_courses',
 ]
 
@@ -42,7 +42,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     #  'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_auth_lti.middleware.LTIAuthMiddleware',
-    'canvas_oauth.middleware.OAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'report_tools.urls'
@@ -226,5 +225,5 @@ LOGGING = {
 
 REPORT_TOOLS = {
     'canvas_client_id': SECURE_SETTINGS['canvas_client_id'],
-    'canvas_client_key': SECURE_SETTINGS['canvas_client_key'],
+    'canvas_client_key': SECURE_SETTINGS['canvas_client_secret'],
 }

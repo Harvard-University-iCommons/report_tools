@@ -30,6 +30,6 @@ LOGGING['loggers']['canvas_sdk'] = {
     'level': logging.DEBUG,
     'handlers': ['default'],
     'propagate': False,
-},
+}
 
 dictConfig(LOGGING)
