@@ -68,7 +68,7 @@ def lti_launch(request):
             logger.debug("session doesn't have a canvas_api_token; redirecting user to OAuth workflow")
             oauth_initial_state = '21345'
             request.session['oauth_initial_state'] = urllib.quote_plus(oauth_initial_state)  # make this some random value
-            oauth_client_id = settings.REPORT_TOOLS.get('canvas_client_id')
+            oauth_client_id = settings.REPORT_TOOLS['canvas_client_id']
 
             if request.is_secure():
                 host = 'https://' + request.get_host()
@@ -115,9 +115,9 @@ def oauth_complete(request):
         oauth_token_url = 'https://%s/login/oauth2/token' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
         logger.debug('Fetch key using this URL: %s' % oauth_token_url)
         post_params = {
-            'client_id': settings.REPORT_TOOLS.get('canvas_client_id'),
+            'client_id': settings.REPORT_TOOLS['canvas_client_id'],
             'redirect_uri': reverse('oauth_complete'),
-            'client_secret': settings.REPORT_TOOLS.get('canvas_client_key'),
+            'client_secret': settings.REPORT_TOOLS['canvas_client_secret'],
             'code': oauth_code,
         }
         r = requests.post(oauth_token_url, post_params)
