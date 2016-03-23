@@ -211,6 +211,11 @@ LOGGING = {
         'handlers': ['default'],
     },
     'loggers': {
+        'django': {
+            'level': _DEFAULT_LOG_LEVEL,
+            'handlers': ['default'],
+            'propagate': False,
+        },
         'account_courses': {
             'level': _DEFAULT_LOG_LEVEL,
             'handlers': ['default'],
@@ -225,5 +230,5 @@ LOGGING = {
 
 REPORT_TOOLS = {
     'canvas_client_id': SECURE_SETTINGS['canvas_client_id'],
-    'canvas_client_key': SECURE_SETTINGS['canvas_client_secret'],
+    'canvas_client_secret': SECURE_SETTINGS['canvas_client_secret'],
 }
