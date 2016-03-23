@@ -1,6 +1,8 @@
 #includes the base.txt requirements needed in all environments
 -r base.txt
 
+-e ../django-canvas-oauth
+
 # below are requirements specific to the local environment
 django-debug-toolbar==1.4
 django-sslserver==0.18

@@ -1,5 +1,4 @@
 from django.conf.urls import url
-# from django.contrib import admin
 
 from account_courses import views as ac_views
 
