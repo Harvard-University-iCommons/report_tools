@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import logging
+from datetime import timedelta
+
 from django.core.urlresolvers import reverse_lazy
+
 from .secure import SECURE_SETTINGS
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -29,7 +32,7 @@ INSTALLED_APPS = [
     'django_auth_lti',
     'icommons_ui',
     'account_courses',
-    'canvas_oauth.apps.CanvasOauthConfig',
+    'canvas_oauth.apps.CanvasOAuthConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -227,4 +230,5 @@ LOGGING = {
 
 CANVAS_OAUTH_CLIENT_ID = SECURE_SETTINGS['canvas_client_id']
 CANVAS_OAUTH_CLIENT_SECRET = SECURE_SETTINGS['canvas_client_secret']
-CANVAS_OAUTH_CANVAS_FQDN = SECURE_SETTINGS['canvas_fqdn']
+CANVAS_OAUTH_CANVAS_DOMAIN = SECURE_SETTINGS['canvas_domain']
+CANVAS_OAUTH_TOKEN_EXPIRATION_BUFFER = timedelta(minutes=3)

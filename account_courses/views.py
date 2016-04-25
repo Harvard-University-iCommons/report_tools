@@ -6,10 +6,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from canvas_oauth.oauth import get_oauth_token
-from canvas_oauth.exceptions import InvalidTokenError
 
 from canvas_sdk.methods import accounts
-from canvas_sdk.exceptions import InvalidOAuthTokenError
 from canvas_sdk import RequestContext, client
 
 import logging
@@ -68,16 +66,11 @@ def main(request):
     if term_id and term_id != '' and term_id != 'all':
         term_id = 'sis_term_id:%s' % term_id
 
-    try:
-        if request.GET.get('page_link'):
-            api_response = client.get(rc, request.GET.get('page_link'))
-        else:
-
-            logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
-            api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published, per_page=12)
-    except InvalidOAuthTokenError as ite:
-        logger.info("Caught an invalid token error from the SDK: %s", str(ite))
-        raise InvalidTokenError(str(ite))
+    if request.GET.get('page_link'):
+        api_response = client.get(rc, request.GET.get('page_link'))
+    else:
+        logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
+        api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published, per_page=12)
 
     logger.debug(api_response.text)
     account_courses = api_response.json()
