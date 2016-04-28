@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import logging
+from datetime import timedelta
+
 from django.core.urlresolvers import reverse_lazy
+
 from .secure import SECURE_SETTINGS
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -28,8 +31,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_auth_lti',
     'icommons_ui',
-    'icommons_common',
     'account_courses',
+    'canvas_oauth.apps.CanvasOAuthConfig',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -42,6 +45,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     #  'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_auth_lti.middleware.LTIAuthMiddleware',
+    'canvas_oauth.middleware.OAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'report_tools.urls'
@@ -92,22 +96,8 @@ DATABASES = {
         'PASSWORD': SECURE_SETTINGS.get('db_default_password'),
         'HOST': SECURE_SETTINGS.get('db_default_host', '127.0.0.1'),
         'PORT': SECURE_SETTINGS.get('db_default_port', 5432),  # Default postgres port
-    },
-    'termtool': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': SECURE_SETTINGS.get('db_termtool_name'),
-        'USER': SECURE_SETTINGS.get('db_termtool_user'),
-        'PASSWORD': SECURE_SETTINGS.get('db_termtool_password'),
-        'HOST': SECURE_SETTINGS.get('db_termtool_host'),
-        'PORT': str(SECURE_SETTINGS.get('db_termtool_port')),
-        'OPTIONS': {
-            'threaded': True,
-        },
-        'CONN_MAX_AGE': 0,
     }
 }
-
-DATABASE_ROUTERS = ['icommons_common.routers.CourseSchemaDatabaseRouter']
 
 # Cache
 # https://docs.djangoproject.com/en/1.9/ref/settings/#std:setting-CACHES
@@ -221,6 +211,16 @@ LOGGING = {
             'handlers': ['default'],
             'propagate': False,
         },
+        'canvas_sdk': {
+            'level': _DEFAULT_LOG_LEVEL,
+            'handlers': ['default'],
+            'propagate': False,
+        },
+        'canvas_oauth': {
+            'level': _DEFAULT_LOG_LEVEL,
+            'handlers': ['default'],
+            'propagate': False,
+        },
         # Make sure that propagate is False so that the root logger doesn't get
         # involved after an app logger handles a log message.
     },
@@ -228,7 +228,7 @@ LOGGING = {
 
 # Other project specific settings
 
-REPORT_TOOLS = {
-    'canvas_client_id': SECURE_SETTINGS['canvas_client_id'],
-    'canvas_client_secret': SECURE_SETTINGS['canvas_client_secret'],
-}
+CANVAS_OAUTH_CLIENT_ID = SECURE_SETTINGS['canvas_client_id']
+CANVAS_OAUTH_CLIENT_SECRET = SECURE_SETTINGS['canvas_client_secret']
+CANVAS_OAUTH_CANVAS_DOMAIN = SECURE_SETTINGS['canvas_domain']
+CANVAS_OAUTH_TOKEN_EXPIRATION_BUFFER = timedelta(minutes=3)
