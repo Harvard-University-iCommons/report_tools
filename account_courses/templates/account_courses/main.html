@@ -11,27 +11,26 @@
         <select id="term_id" name="term_id" class="form-control input-sm" onchange="this.form.submit()">
         <option value="all">All terms</option>
         {% for t_id, t_name in terms.items %}
-            <option value="{{ t_id }}" {% if request.GET.term_id == t_id %}selected="yes"{% endif %}>{{ t_name }}</option>
+            <option value="{{ t_id }}" {% if t_id in term_id %}selected="yes"{% endif %}>{{ t_name }}</option>
         {% endfor %}
-        </select> 
+        </select>
     </div>
 
     <div class="form-group">
         <label for="published" class="sr-only">Published status</label>
         <select id="published" name="published" class="form-control input-sm" onchange="this.form.submit()">
             <option value="all">Both published and unpublished</option>
-            <option value="true" {% if request.GET.published == 'true' %}selected="yes"{% endif %}>Only published courses</option>
-            <option value="false" {% if request.GET.published == 'false' %}selected="yes"{% endif %}>Only unpublished courses</option>
+            <option value="true" {% if published  and published == 'true' %}selected="yes"{% endif %}>Only published courses</option>
+            <option value="false" {% if published and published == 'false' %}selected="yes"{% endif %}>Only unpublished courses</option>
         </select>
     </div>
     <div class="form-group">
         <label for="search_term" class="sr-only">Search term</label>
-        <input id="search_term" name="search_term" placeholder="Search" class="form-control input-sm" value="{{ search_term }}"/>
+        <input id="search_term" name="search_term" placeholder="Search" class="form-control input-sm" value="{{ search_term|default_if_none:'' }}"/>
     </div>
 
     <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i><span class="sr-only">Search</span></button>
 
-    
 </form>
 
 <table class="table table-condensed">
@@ -78,7 +77,7 @@
 
         {% if course.workflow_state == 'available' %}
         <td class="text-success"><i class="fa fa-check text-success"></i><span class="sr-only">available</span></td>
-        {% elif course_workflow_state == 'deleted' %}
+        {% elif course.workflow_state == 'deleted' %}
         <td class="text-danger">{{ course.workflow_state }}</td>
         {% else %}
         <td>{{ course.workflow_state }}</td>
@@ -106,15 +105,15 @@
 
 {% if page_links %}
     <ul class="pager">
-    {% if page_links.prev %}
+    {% if 'prev' in page_links %}
         <li><a href="{{ self_link }}&page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
     {% else %}
-        <li class="disabled"><a href="{{ self_link }}&page_link={{ page_links.prev.url|urlencode }}">Previous</a></li>
+        <li class="disabled"><a href="{{ self_link }}">Previous</a></li>
     {% endif %}
-    {% if page_links.next %}
+    {% if 'next' in page_links %}
         <li><a href="{{ self_link }}&page_link={{ page_links.next.url|urlencode }}">Next</a></li>
     {% else %}
-        <li class="disabled"><a href="{{ self_link }}&page_link={{ page_links.next.url|urlencode }}">Next</a></li>
+        <li class="disabled"><a href="{{ self_link }}">Next</a></li>
     {% endif %}
     </ul>
 {% endif %}
