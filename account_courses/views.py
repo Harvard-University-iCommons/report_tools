@@ -54,7 +54,6 @@ def main(request):
     # the current account ID is in custom_canvas_account_id
     canvas_api_token = get_oauth_token(request)
     account_id = request.session['LTI_LAUNCH'].get('custom_canvas_account_id')
-    account_name = request.session['LTI_LAUNCH'].get('custom_canvas_account_id')
 
     canvas_api_url = 'https://%s/api' % request.session['LTI_LAUNCH'].get('custom_canvas_api_domain')
     rc = RequestContext(canvas_api_token, canvas_api_url, per_page=15)
@@ -62,15 +61,26 @@ def main(request):
     search_term = request.GET.get('search_term')
     term_id = request.GET.get('term_id')
     published = request.GET.get('published')
+    page_link = request.GET.get('page_link')
 
-    if term_id and term_id != '' and term_id != 'all':
-        term_id = 'sis_term_id:%s' % term_id
+    logger.debug("search term is %s" % search_term)
+    if search_term == '':
+        search_term = None
 
-    if request.GET.get('page_link'):
+    logger.debug("term id is %s" % term_id)
+    if term_id:
+        if term_id == 'all':
+            term_id = None
+        else:
+            term_id = 'sis_term_id:%s' % term_id
+
+    if page_link:
         api_response = client.get(rc, request.GET.get('page_link'))
     else:
         logger.debug('searching for "%s" and term "%s"' % (search_term, term_id))
-        api_response = accounts.list_active_courses_in_account(rc, account_id, search_term=search_term, enrollment_term_id=term_id, published=published, per_page=12)
+        api_response = accounts.list_active_courses_in_account(
+            rc, account_id, search_term=search_term, enrollment_term_id=term_id,
+            published=published, per_page=12)
 
     logger.debug(api_response.text)
     account_courses = api_response.json()
@@ -90,7 +100,7 @@ def main(request):
         'request': request,
         'account_courses': account_courses,
         'page_links': page_links,
-        'search_term': request.GET.get('search_term', ''),
+        'search_term': search_term,
         'terms': TERMS,
         'term_id': term_id,
         'published': published,
